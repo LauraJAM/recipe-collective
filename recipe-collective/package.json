@@ -1,0 +1,12 @@
+{
+  "name": "recipe-collective",
+  "version": "1.0.0",
+  "description": "The Recipe Collective - shared family recipe database",
+  "scripts": {
+    "dev": "netlify dev"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.20.0",
+    "node-fetch": "^3.3.2"
+  }
+}
