@@ -1,5 +1,4 @@
 const Anthropic = require("@anthropic-ai/sdk");
-
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 exports.handler = async (event) => {
@@ -13,11 +12,10 @@ exports.handler = async (event) => {
   }
 
   try {
-    // Fetch the page content
     const fetchRes = await fetch(url);
     const html = await fetchRes.text();
+    console.log("Fetch status:", fetchRes.status, "HTML length:", html.length);
 
-    // Strip HTML tags for a cleaner text blob (rough but effective)
     const text = html
       .replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "")
       .replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "")
@@ -26,7 +24,6 @@ exports.handler = async (event) => {
       .slice(0, 15000);
 
     const prompt = `You are extracting a recipe from web page content. Return ONLY valid JSON, no markdown, no explanation.
-
 Extract this recipe and return JSON with these exact fields:
 {
   "name": "Recipe name",
@@ -39,10 +36,8 @@ Extract this recipe and return JSON with these exact fields:
   "suggestedTags": ["array", "of", "tags"],
   "notes": "Any useful tips or notes from the recipe, or empty string"
 }
-
 For suggestedTags, only use tags from this list:
 Breakfast, Lunch, Dinner, Snack, Dessert, Under 30 Minutes, One Pan, Sheet Pan, Slow Cooker, Make Ahead, Freezer Friendly, Kid Friendly, Vegetarian, Favorites
-
 Page content:
 ${text}`;
 
@@ -53,15 +48,16 @@ ${text}`;
     });
 
     const raw = response.content[0].text.trim();
-    const recipe = JSON.parse(raw);
+    console.log("Claude raw response:", raw.slice(0, 500));
 
+    const recipe = JSON.parse(raw);
     return {
       statusCode: 200,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(recipe),
     };
   } catch (err) {
-    console.error(err);
+    console.error("EXTRACT ERROR:", err.message, err.stack);
     return {
       statusCode: 500,
       body: JSON.stringify({ error: "Failed to extract recipe", detail: err.message }),
