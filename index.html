@@ -739,7 +739,7 @@
   // ---- LOAD RECIPES ----
   async function loadRecipes() {
     try {
-      const res = await fetch('/api/recipes');
+      const res = await fetch('/.netlify/functions/recipes');
       allRecipes = await res.json();
       filterRecipes();
     } catch (e) {
@@ -1006,7 +1006,7 @@
 
     try {
       if (editingRecipeId) {
-        const res = await fetch('/api/recipes', {
+        const res = await fetch('/.netlify/functions/recipes', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ id: editingRecipeId, ...fields })
@@ -1014,7 +1014,7 @@
         if (!res.ok) throw new Error();
         showToast('Recipe updated!');
       } else {
-        const res = await fetch('/api/recipes', {
+        const res = await fetch('/.netlify/functions/recipes', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(fields)
@@ -1034,7 +1034,7 @@
   async function deleteRecipe(id) {
     if (!confirm('Delete this recipe? This cannot be undone.')) return;
     try {
-      const res = await fetch(`/api/recipes?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/.netlify/functions/recipes?id=${id}`, { method: 'DELETE' });
       if (!res.ok) throw new Error();
       closeDetailModal();
       showToast('Recipe deleted');
