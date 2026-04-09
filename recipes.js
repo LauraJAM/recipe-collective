@@ -47,8 +47,9 @@ exports.handler = async (event) => {
     try {
       const res = await fetch(`${AIRTABLE_URL}/${id}`, { headers });
       const data = await res.json();
-      return {
-        statusCode: 200,
+console.log("Airtable POST response:", JSON.stringify(data));
+return {
+  statusCode: 200,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       };
