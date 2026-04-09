@@ -47,7 +47,7 @@ ${text}`;
       messages: [{ role: "user", content: prompt }],
     });
 
-    const raw = response.content[0].text.trim();
+    const raw = response.content[0].text.trim().replace(/^```json\s*/i, "").replace(/```\s*$/i, "");
     console.log("Claude raw response:", raw.slice(0, 500));
 
     const recipe = JSON.parse(raw);
